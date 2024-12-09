@@ -19,5 +19,14 @@ declare module 'vue' {
 }
 
 declare module '@inertiajs/core' {
-    interface PageProps extends InertiaPageProps, AppPageProps {}
+    interface PageProps extends InertiaPageProps, AppPageProps {
+        auth: {
+            user: {
+                id: number,
+                name: string,
+                email: string,
+                email_verified_at: Date;
+            }
+        }
+    }
 }

@@ -12,3 +12,15 @@ export type PageProps<
         user: User;
     };
 };
+
+declare module '@vue/runtime-core' {
+    interface ComponentCustomProperties {
+        $page: PageProps & {
+            props: {
+                auth: {
+                    user: User
+                }
+            }
+        }
+    }
+}
