@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\CategoryResource;
+use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
@@ -15,7 +18,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Product/Index');
+        $products = auth()->user()->products()->latest()->get();
+
+        return Inertia::render('Product/Index', [
+            'products' => ProductResource::collection($products),
+        ]);
     }
 
     /**
@@ -23,15 +30,19 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Product/Create', [
+            "categories" => CategoryResource::collection(Category::orderBy("name")->get()),
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
-        //
+        $request->user()->products()->create($request->all());
+
+        return redirect()->route("products.index");
     }
 
     /**
