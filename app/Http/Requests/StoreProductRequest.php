@@ -37,11 +37,4 @@ class StoreProductRequest extends FormRequest
             'category_id' => 'Category',
         ];
     }
-
-    // public function prepareForValidation()
-    // {
-    //     $this->merge([
-    //         'price' => $this->price * 100,
-    //     ]);
-    // }
 }
