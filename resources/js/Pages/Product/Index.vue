@@ -1,16 +1,32 @@
 <script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { Product } from '@/types';
 
-const { products } = defineProps<{
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ConfirmationDialog from '@/Components/ConfirmationDialog.vue';
+
+defineProps<{
     products: Product[]
-}>(); 
+}>();
+
+const isDialogOpen = ref<boolean>(false);
+const selectedProductId = ref<number>();
+
+const handleDelete = () => {
+    router.delete(route('products.destroy', selectedProductId.value), {
+        preserveScroll: true,
+        onFinish: () => isDialogOpen.value = false
+    })
+}
 </script>
 
 <template>
 
     <Head title="Product" />
+
+    <ConfirmationDialog :is-open="isDialogOpen" title="Are you sure ?" message="This action can't be undone."
+        @confirm="handleDelete" @cancel="isDialogOpen = false" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -69,7 +85,9 @@ const { products } = defineProps<{
                                         class="font-medium text-gray-600 hover:underline">Show</Link>
                                     <Link :href="route('products.edit', product.id)"
                                         class="font-medium text-blue-600 hover:underline">Edit</Link>
-                                    <a href="#" class="font-medium text-red-600 hover:underline">Delete</a>
+                                    <button @click="isDialogOpen = true, selectedProductId = product.id"
+                                        class="font-medium text-red-600 hover:underline">
+                                        Delete</button>
                                 </td>
                             </tr>
                         </tbody>
