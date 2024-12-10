@@ -12,8 +12,10 @@ export interface Product {
     price_formatted: string;
     brand: string;
     weight: string;
+    description: string;
     category: {
         id: number;
+
         name: string;
     }
 }
