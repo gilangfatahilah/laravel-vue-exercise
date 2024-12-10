@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Category;
 use Inertia\Inertia;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CategoryResource;
@@ -38,9 +39,9 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request->user()->products()->create($request->all());
+        $request->user()->products()->create($request->validated());
 
         return redirect()->route("products.index");
     }
