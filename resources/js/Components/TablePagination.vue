@@ -5,6 +5,7 @@ import { ProductResponse } from '@/types';
 defineProps<{
     meta: ProductResponse['meta']
 }>();
+
 </script>
 
 <template>
