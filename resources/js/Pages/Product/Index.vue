@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { ProductResponse } from '@/types';
 
@@ -7,8 +7,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmationDialog from '@/Components/ConfirmationDialog.vue';
 import TablePagination from '@/Components/TablePagination.vue';
 import Sortable from '@/Components/Sortable.vue';
+import Checkbox from '@/Components/Checkbox.vue';
 
-defineProps<{
+const { products, query } = defineProps<{
     products: ProductResponse
     query?: {
         search: string
@@ -16,7 +17,12 @@ defineProps<{
 }>();
 
 const isDialogOpen = ref<boolean>(false);
+const selectedProductIds = ref<number[]>([]);
 const selectedProductId = ref<number>();
+
+const isAllSelected = computed(() => {
+    return selectedProductIds.value.length === products.data.length && products.data.length > 0
+})
 
 const handleDelete = () => {
     router.delete(route('products.destroy', selectedProductId.value), {
@@ -34,6 +40,22 @@ const handleSearch = (event: KeyboardEvent) => {
     router.get(route("products.index", {
         search: target.value
     }))
+}
+
+const handleCheckboxChange = (isChecked: boolean, productId: number) => {
+    if (isChecked) {
+        selectedProductIds.value.push(productId);
+    } else {
+        selectedProductIds.value = selectedProductIds.value.filter(id => id !== productId);
+    }
+};
+
+const handleCheckboxSelectAll = (isChecked: boolean) => {
+    if (isChecked) {
+        selectedProductIds.value = products.data.map((product) => product.id);
+    } else {
+        selectedProductIds.value = [];
+    }
 }
 </script>
 
@@ -63,6 +85,7 @@ const handleSearch = (event: KeyboardEvent) => {
                 <div
                     class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-end pb-6">
                     <div class="relative">
+
                         <div
                             class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-500" aria-hidden="true" fill="currentColor"
@@ -78,9 +101,12 @@ const handleSearch = (event: KeyboardEvent) => {
                     </div>
                 </div>
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table class="w-full    text-sm text-left rtl:text-right text-gray-500">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500">
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b">
                             <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    <Checkbox :checked="isAllSelected" @update:checked="handleCheckboxSelectAll" />
+                                </th>
                                 <th scope="col" class="px-6 py-3">
                                     No
                                 </th>
@@ -104,6 +130,10 @@ const handleSearch = (event: KeyboardEvent) => {
                         <tbody>
                             <tr v-for="(product, index) in products.data" :key="product.id"
                                 class="bg-white border-b hover:bg-gray-50">
+                                <th scope="row" class="px-6 py-4">
+                                    <Checkbox :value="product.id" :checked="selectedProductIds.includes(product.id)"
+                                        @update:checked="(isChecked: boolean) => handleCheckboxChange(isChecked, product.id)" />
+                                </th>
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     {{ products.meta.from + index }}
                                 </th>
