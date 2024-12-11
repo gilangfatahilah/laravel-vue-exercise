@@ -16,9 +16,15 @@ const { products, query } = defineProps<{
     }
 }>();
 
-const isDialogOpen = ref<boolean>(false);
 const selectedProductIds = ref<number[]>([]);
 const selectedProductId = ref<number>();
+const isDialogOpen = ref<{
+    bulk: boolean,
+    single: boolean
+}>({
+    bulk: false,
+    single: false
+});
 
 const isAllSelected = computed(() => {
     return selectedProductIds.value.length === products.data.length && products.data.length > 0
@@ -27,9 +33,25 @@ const isAllSelected = computed(() => {
 const handleDelete = () => {
     router.delete(route('products.destroy', selectedProductId.value), {
         preserveScroll: true,
-        onFinish: () => {
-            isDialogOpen.value = false
+        onSuccess: () => {
+            isDialogOpen.value.single = false
             selectedProductId.value = undefined
+        }
+    })
+}
+
+const handleBulkDelete = (): void => {
+    if (!selectedProductIds.value.length) {
+        alert("No products selected for deletion.");
+        return;
+    }
+
+    router.delete(route('products.bulkDelete'), {
+        data: { product_ids: selectedProductIds.value },
+        preserveScroll: true,
+        onSuccess: () => {
+            isDialogOpen.value.bulk = false
+            selectedProductIds.value = []
         }
     })
 }
@@ -63,8 +85,11 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
 
     <Head title="Product" />
 
-    <ConfirmationDialog :is-open="isDialogOpen" title="Are you sure ?" message="This action can't be undone."
-        @confirm="handleDelete" @cancel="isDialogOpen = false" />
+    <ConfirmationDialog :is-open="isDialogOpen.single" title="Are you sure ?" message="This action can't be undone."
+        @confirm="handleDelete" @cancel="isDialogOpen.single = false" />
+
+    <ConfirmationDialog :is-open="isDialogOpen.bulk" title="Are you sure ?" message="This action can't be undone."
+        @confirm="handleBulkDelete" @cancel="isDialogOpen.bulk = false" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -83,9 +108,12 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div
-                    class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-end pb-6">
-                    <div class="relative">
+                    class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-end gap-2 pb-6">
+                    <button v-show="selectedProductIds.length" @click="isDialogOpen.bulk = true"
+                        class="font-medium rounded-md text-sm px-5 py-2 text-white bg-red-700 border border-red-500 focus:outline-none hover:bg-red-600 focus:ring-4 focus:ring-red-500">
+                        Delete</button>
 
+                    <div class="relative">
                         <div
                             class="absolute inset-y-0 left-0 rtl:inset-r-0 rtl:right-0 flex items-center ps-3 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-500" aria-hidden="true" fill="currentColor"
@@ -154,7 +182,7 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
                                         class="font-medium text-gray-600 hover:underline">Show</Link>
                                     <Link :href="route('products.edit', product.id)"
                                         class="font-medium text-blue-600 hover:underline">Edit</Link>
-                                    <button @click="isDialogOpen = true, selectedProductId = product.id"
+                                    <button @click="isDialogOpen.single = true, selectedProductId = product.id"
                                         class="font-medium text-red-600 hover:underline">
                                         Delete</button>
                                 </td>

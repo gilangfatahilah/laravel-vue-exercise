@@ -153,10 +153,12 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </header>
 
+            {{ pageProps.toast.message }}
             <!-- Page Content -->
             <main>
                 <slot />
             </main>
+
         </div>
     </div>
 

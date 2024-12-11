@@ -108,4 +108,17 @@ class ProductController extends Controller
 
         return redirect()->route("products.index")->with("message", "Product deleted successfully");
     }
+
+    public function bulkDestroy(Request $request)
+    {
+        $request->validate([
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'integer|exists:products,id',
+        ]);
+
+        $productIds = $request->input('product_ids');
+        Product::whereIn('id', $productIds)->delete();
+
+        return redirect()->route("products.index")->with("message", "Several product deleted successfully");
+    }
 }

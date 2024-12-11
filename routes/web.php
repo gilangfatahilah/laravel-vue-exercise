@@ -20,6 +20,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::delete('/products/bulk-delete', [ProductController::class, 'bulkDestroy'])->name('products.bulkDelete');
     Route::resource('/products', ProductController::class);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
