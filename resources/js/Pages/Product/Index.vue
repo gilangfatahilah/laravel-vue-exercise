@@ -6,6 +6,7 @@ import { ProductResponse } from '@/types';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmationDialog from '@/Components/ConfirmationDialog.vue';
 import TablePagination from '@/Components/TablePagination.vue';
+import Sortable from '@/Components/Sortable.vue';
 
 defineProps<{
     products: ProductResponse
@@ -84,16 +85,16 @@ const handleSearch = (event: KeyboardEvent) => {
                                     No
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Product name
+                                    <Sortable label="Product Name" name="name" />
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Category
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Price
+                                    <Sortable label="price" name="price" />
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Weight
+                                    <Sortable label="weight" name="weight" />
                                 </th>
                                 <th scope="col" class="px-6 py-3">
                                     Action
