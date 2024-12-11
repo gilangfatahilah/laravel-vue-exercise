@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { Product } from '@/types';
+import { ProductResponse } from '@/types';
 
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import ConfirmationDialog from '@/Components/ConfirmationDialog.vue';
+import TablePagination from '@/Components/TablePagination.vue';
 
 defineProps<{
-    products: Product[]
+    products: ProductResponse
 }>();
 
 const isDialogOpen = ref<boolean>(false);
@@ -49,6 +50,9 @@ const handleDelete = () => {
                         <thead class="text-xs text-gray-700 uppercase bg-gray-50 border-b">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
+                                    No
+                                </th>
+                                <th scope="col" class="px-6 py-3">
                                     Product name
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -66,11 +70,14 @@ const handleDelete = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="product in products" :key="product.id"
+                            <tr v-for="(product, index) in products.data" :key="product.id"
                                 class="bg-white border-b hover:bg-gray-50">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                    {{ product.name }}
+                                    {{ products.meta.from + index }}
                                 </th>
+                                <td class="px-6 py-4">
+                                    {{ product.name }}
+                                </td>
                                 <td class="px-6 py-4">
                                     {{ product.category.name }}
                                 </td>
@@ -92,43 +99,8 @@ const handleDelete = () => {
                             </tr>
                         </tbody>
                     </table>
-                    <nav class="flex items-center flex-column flex-wrap md:flex-row justify-between py-2 px-4"
-                        aria-label="Table navigation">
-                        <span
-                            class="text-sm font-normal text-gray-700 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing
-                            <span class="font-semibold text-gray-700">1-10</span> of <span
-                                class="font-semibold text-gray-700">1000</span></span>
-                        <ul class="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                            <li>
-                                <a href="#"
-                                    class="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 hover:text-gray-700">Previous</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 hover:text-gray-700">1</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 hover:text-gray-700">2</a>
-                            </li>
-                            <li>
-                                <a href="#" aria-current="page"
-                                    class="flex items-center justify-center px-3 h-8 text-blue-600 hover:text-blue-700">3</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 hover:text-gray-700">4</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 hover:text-gray-700">5</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 hover:text-gray-700">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+
+                    <TablePagination :meta="products.meta" />
                 </div>
             </div>
         </div>
