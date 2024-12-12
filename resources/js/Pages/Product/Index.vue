@@ -108,10 +108,10 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div
-                    class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-end gap-2 pb-6">
+                    class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between gap-2 pb-6">
                     <button v-show="selectedProductIds.length" @click="isDialogOpen.bulk = true"
                         class="font-medium rounded-md text-sm px-5 py-2 text-white bg-red-700 border border-red-500 focus:outline-none hover:bg-red-600 focus:ring-4 focus:ring-red-500">
-                        Delete</button>
+                        Delete Selected</button>
 
                     <div class="relative">
                         <div
