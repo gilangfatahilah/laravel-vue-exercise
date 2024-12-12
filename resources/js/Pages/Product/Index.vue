@@ -8,6 +8,7 @@ import ConfirmationDialog from '@/Components/ConfirmationDialog.vue';
 import TablePagination from '@/Components/TablePagination.vue';
 import Sortable from '@/Components/Sortable.vue';
 import Checkbox from '@/Components/Checkbox.vue';
+import BulkEdit from '@/Components/BulkEdit.vue';
 
 const { products, query } = defineProps<{
     products: ProductResponse
@@ -20,10 +21,12 @@ const selectedProductIds = ref<number[]>([]);
 const selectedProductId = ref<number>();
 const isDialogOpen = ref<{
     bulk: boolean,
-    single: boolean
+    single: boolean,
+    bulkEdit: boolean
 }>({
     bulk: false,
-    single: false
+    single: false,
+    bulkEdit: false
 });
 
 const isAllSelected = computed(() => {
@@ -91,6 +94,8 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
     <ConfirmationDialog :is-open="isDialogOpen.bulk" title="Are you sure ?" message="This action can't be undone."
         @confirm="handleBulkDelete" @cancel="isDialogOpen.bulk = false" />
 
+    <BulkEdit :show="isDialogOpen.bulkEdit" @close="isDialogOpen.bulkEdit = false" />
+
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
@@ -107,11 +112,18 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
 
         <div class="py-6">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div
-                    class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center justify-between gap-2 pb-6">
-                    <button v-show="selectedProductIds.length" @click="isDialogOpen.bulk = true"
-                        class="font-medium rounded-md text-sm px-5 py-2 text-white bg-red-700 border border-red-500 focus:outline-none hover:bg-red-600 focus:ring-4 focus:ring-red-500">
-                        Delete Selected</button>
+                <div class="flex flex-column sm:flex-row flex-wrap space-y-4 sm:space-y-0 items-center gap-2 pb-6"
+                    :class="{ 'justify-between': selectedProductIds.length, 'justify-end': !selectedProductIds.length }">
+                    <div v-show="selectedProductIds.length" class="space-x-3">
+                        <button @click="isDialogOpen.bulk = true"
+                            class="font-medium rounded-md text-sm px-5 py-2 text-white bg-red-700 border border-red-500 focus:outline-none hover:bg-red-600 focus:ring-4 focus:ring-red-500">
+                            Delete Selected</button>
+
+                        <button type="button"
+                            class="px-3 py-2.5 text-sm font-medium text-center text-white rounded-md bg-cyan-500"
+                            @click="isDialogOpen.bulkEdit = true">
+                            Edit Selected</button>
+                    </div>
 
                     <div class="relative">
                         <div
