@@ -15,7 +15,6 @@ export interface Product {
     description: string;
     category: {
         id: number;
-
         name: string;
     }
 }

@@ -12,6 +12,7 @@ import BulkEdit from "@/Components/BulkEdit.vue";
 
 const { products, query } = defineProps<{
     products: ProductResponse;
+    categories: { id: number; name: string }[];
     query?: {
         search: string;
     };
@@ -46,7 +47,7 @@ const handleDelete = () => {
     });
 };
 
-const handleBulkDelete = (): void => {
+const handleBulkDelete = () => {
     if (!selectedProductIds.value.length) {
         alert("No products selected for deletion.");
         return;
@@ -60,6 +61,25 @@ const handleBulkDelete = (): void => {
             selectedProductIds.value = [];
         },
     });
+};
+
+const handleBulkEdit = (categoryId: number) => {
+    if (!selectedProductIds.value.length) {
+        alert("No products selected for deletion.");
+        return;
+    }
+
+    router.put(
+        route("products.bulkEdit"),
+        { product_ids: selectedProductIds.value, categoryId },
+        {
+            preserveScroll: true,
+            onSuccess: () => {
+                isDialogOpen.value.bulkEdit = false;
+                selectedProductIds.value = [];
+            },
+        }
+    );
 };
 
 const handleSearch = (event: KeyboardEvent) => {
@@ -111,8 +131,10 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
     />
 
     <BulkEdit
+        :lists="categories"
         :show="isDialogOpen.bulkEdit"
-        @close="isDialogOpen.bulkEdit = false"
+        @submit="handleBulkEdit"
+        @close="(isDialogOpen.bulkEdit = false), (selectedProductIds = [])"
     />
 
     <AuthenticatedLayout>

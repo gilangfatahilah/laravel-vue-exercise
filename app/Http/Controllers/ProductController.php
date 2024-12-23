@@ -44,6 +44,7 @@ class ProductController extends Controller
 
         return inertia('Product/Index', [
             'products' => ProductResource::collection($products),
+            'categories' => CategoryResource::collection(Category::orderBy("name")->get()),
             'query' => (object) request()->query()
         ]);
     }
@@ -120,5 +121,21 @@ class ProductController extends Controller
         Product::whereIn('id', $productIds)->delete();
 
         return redirect()->route("products.index")->with("message", "Several product deleted successfully");
+    }
+
+    public function bulkEdit (Request $request)
+    {
+        $request->validate([
+            'product_ids' => 'required|array',
+            'product_ids.*' => 'integer|exists:products,id',
+            'categoryId' => 'required|integer|exists:categories,id'
+        ]);
+
+        $productIds = $request->input('product_ids');
+        $categoryId = $request->input('categoryId');
+
+        Product::whereIn('id', $productIds)->update(['category_id' => $categoryId]);
+
+        return redirect()->route("products.index")->with("message", "Several product updated successfully");
     }
 }
