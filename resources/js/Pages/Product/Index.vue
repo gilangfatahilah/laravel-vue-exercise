@@ -9,6 +9,7 @@ import TablePagination from "@/Components/TablePagination.vue";
 import Sortable from "@/Components/Sortable.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import BulkEdit from "@/Components/BulkEdit.vue";
+import Badge from "@/Components/ui/badge/Badge.vue";
 
 const { products, query } = defineProps<{
     products: ProductResponse;
@@ -143,6 +144,8 @@ const handleCheckboxSelectAll = (isChecked: boolean) => {
                 <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Product
                 </h2>
+
+                <Badge>Hello world</Badge>
 
                 <Link
                     :href="route('products.create')"

@@ -97,7 +97,8 @@ class ProductController extends Controller
     {
         $product->update($request->validated());
 
-        return redirect()->route("products.index")->with("message", "Product updated successfully.");
+        return redirect()->route("products.index")
+        ->with("message", "Product updated successfully.");
     }
 
     /**
@@ -107,7 +108,8 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return redirect()->route("products.index")->with("message", "Product deleted successfully");
+        return redirect()->route("products.index")
+        ->with("message", "Product deleted successfully");
     }
 
     public function bulkDestroy(Request $request)
@@ -120,7 +122,8 @@ class ProductController extends Controller
         $productIds = $request->input('product_ids');
         Product::whereIn('id', $productIds)->delete();
 
-        return redirect()->route("products.index")->with("message", "Several product deleted successfully");
+        return redirect()->route("products.index")
+        ->with("message", "Several product deleted successfully");
     }
 
     public function bulkEdit (Request $request)
@@ -136,6 +139,7 @@ class ProductController extends Controller
 
         Product::whereIn('id', $productIds)->update(['category_id' => $categoryId]);
 
-        return redirect()->route("products.index")->with("message", "Several product updated successfully");
+        return redirect()->route("products.index")
+        ->with("message", "Several product updated successfully");
     }
 }
