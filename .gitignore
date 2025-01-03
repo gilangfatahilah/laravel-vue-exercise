@@ -6,6 +6,7 @@
 /storage/*.key
 /storage/pail
 /vendor
+/.pnpm-store
 .env
 .env.backup
 .env.production

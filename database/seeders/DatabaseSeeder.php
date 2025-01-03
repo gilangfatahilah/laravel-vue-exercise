@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Category;
-use App\models\Product;
+use App\Models\Product;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $categories =  Category::factory(10)->create();
+        $categories = Category::factory(10)->create();
 
         User::factory(5)->has(Product::factory(30)->state(
             function () use ($categories) {
